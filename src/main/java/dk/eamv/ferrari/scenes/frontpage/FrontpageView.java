@@ -13,17 +13,21 @@ import javafx.scene.text.FontWeight;
 
 // Made by: Benjamin and Stefan
 public class FrontpageView {
+
     public static BorderPane getScene() {
         BorderPane scene = new BorderPane();
         scene.setLeft(SidebarView.getSidebarView());
-        SidebarView.getSidebarView().setActiveToggleButton(SidebarButton.DASHBOARD);
+        SidebarView.getSidebarView()
+            .setActiveToggleButton(SidebarButton.DASHBOARD);
         scene.setCenter(getFrontPageView());
         return scene;
     }
 
     private static BorderPane getFrontPageView() {
         BorderPane bPane = new BorderPane();
-        ImageView imageView = new ImageView(new Image("file:src/main/resources/media/ferrari-logo.png"));
+        ImageView imageView = new ImageView(
+            new Image("file:src/main/resources/media/ferrari-logo.png")
+        );
         imageView.setFitHeight(500);
         imageView.setFitWidth(300);
         bPane.setCenter(imageView);

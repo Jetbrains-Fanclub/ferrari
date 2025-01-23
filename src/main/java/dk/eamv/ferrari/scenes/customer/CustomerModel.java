@@ -1,14 +1,14 @@
 package dk.eamv.ferrari.scenes.customer;
 
 import dk.eamv.ferrari.database.Database;
-
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.util.ArrayList;
 
 // Made by: Benjamin
 public final class CustomerModel {
+
     // Private constructor to disallow instantiation
     private CustomerModel() {}
 
@@ -18,12 +18,15 @@ public final class CustomerModel {
      */
     public static void create(Customer customer) {
         try {
-            PreparedStatement statement = Database.getConnection().prepareStatement(
-                String.format("""
-                    INSERT INTO dbo.Customer
-                    VALUES (?, ?, ?, ?, ?, ?);
-                """)
-            );
+            PreparedStatement statement = Database.getConnection()
+                .prepareStatement(
+                    String.format(
+                        """
+                            INSERT INTO Customer
+                            VALUES (?, ?, ?, ?, ?, ?);
+                        """
+                    )
+                );
 
             statement.setString(1, customer.getFirstName());
             statement.setString(2, customer.getLastName());
@@ -44,14 +47,20 @@ public final class CustomerModel {
      * @return Customer containing the database row information
      */
     public static Customer read(int id) {
-        ResultSet rs = Database.query("SELECT * FROM dbo.Customer WHERE id = " + id);
+        ResultSet rs = Database.query(
+            "SELECT * FROM Customer WHERE id = " + id
+        );
 
         try {
             if (rs.next()) {
                 return new Customer(
-                    id, rs.getString("first_name"), rs.getString("last_name"),
-                    rs.getString("phone_number"), rs.getString("email"),
-                    rs.getString("address"), rs.getString("cpr")
+                    id,
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("phone_number"),
+                    rs.getString("email"),
+                    rs.getString("address"),
+                    rs.getString("cpr")
                 );
             }
         } catch (SQLException exception) {
@@ -68,13 +77,19 @@ public final class CustomerModel {
     public static ArrayList<Customer> readAll() {
         ArrayList<Customer> customers = new ArrayList<Customer>();
 
-        try (ResultSet rs = Database.query("SELECT * FROM dbo.Customer")) {
+        try (ResultSet rs = Database.query("SELECT * FROM Customer")) {
             while (rs.next()) {
-                customers.add(new Customer(
-                    rs.getInt("id"), rs.getString("first_name"), rs.getString("last_name"),
-                    rs.getString("phone_number"), rs.getString("email"),
-                    rs.getString("address"), rs.getString("cpr")
-                ));
+                customers.add(
+                    new Customer(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("phone_number"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("cpr")
+                    )
+                );
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -89,14 +104,17 @@ public final class CustomerModel {
      */
     public static void update(Customer customer) {
         try {
-            PreparedStatement statement = Database.getConnection().prepareStatement("""
-                UPDATE dbo.Customer
-                SET
-                    first_name = ?, last_name = ?,
-                    phone_number = ?, email = ?,
-                    address = ?, cpr = ?
-                WHERE id = ?;
-            """);
+            PreparedStatement statement = Database.getConnection()
+                .prepareStatement(
+                    """
+                        UPDATE Customer
+                        SET
+                            first_name = ?, last_name = ?,
+                            phone_number = ?, email = ?,
+                            address = ?, cpr = ?
+                        WHERE id = ?;
+                    """
+                );
 
             statement.setString(1, customer.getFirstName());
             statement.setString(2, customer.getLastName());
@@ -118,6 +136,6 @@ public final class CustomerModel {
      * @return boolean indicating if the deletion was successful
      */
     public static boolean delete(int id) {
-        return Database.execute("DELETE FROM dbo.Customer WHERE id = " + id);
+        return Database.execute("DELETE FROM Customer WHERE id = " + id);
     }
 }

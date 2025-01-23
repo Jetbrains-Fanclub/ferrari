@@ -2,32 +2,21 @@ package dk.eamv.ferrari.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 // Made by: Benjamin
 public abstract class Database {
+
     private static Connection connection;
 
-    /** 
-     * Initialize connection to the database.
-    */
-    public static void init() {
-        String connectionString = System.getenv("SQL_SERVER_CONNECTION");
-        if (connectionString == null) {
-            throw new RuntimeException("Environment variable SQL_SERVER_CONNECTION not set");
-        }
-
-        init(connectionString);
-    }
-
     /**
-     * Initialize connection to the database using a connection string
+     * Initialize connection to the database using the filepath
      * @param connectionString the SQL Server connection URL
      */
-    public static void init(String connectionString) {
+    public static void init(String filepath) {
         try {
-            connection = DriverManager.getConnection(connectionString);
+            connection = DriverManager.getConnection("jdbc:sqlite:" + filepath);
         } catch (SQLException exception) {
             exception.printStackTrace();
         }

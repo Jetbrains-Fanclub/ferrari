@@ -1,14 +1,14 @@
 package dk.eamv.ferrari.scenes.employee;
 
 import dk.eamv.ferrari.database.Database;
-
-import java.util.ArrayList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 // Made by: Benjamin
 public final class EmployeeModel {
+
     // Private constructor to disallow instantiation
     private EmployeeModel() {}
 
@@ -18,12 +18,15 @@ public final class EmployeeModel {
      */
     public static void create(Employee employee) {
         try {
-            PreparedStatement statement = Database.getConnection().prepareStatement(
-                String.format("""
-                    INSERT INTO dbo.Employee
-                    VALUES (?, ?, ?, ?, ?, ?);
-                """)
-            );
+            PreparedStatement statement = Database.getConnection()
+                .prepareStatement(
+                    String.format(
+                        """
+                            INSERT INTO Employee
+                            VALUES (?, ?, ?, ?, ?, ?);
+                        """
+                    )
+                );
 
             statement.setString(1, employee.getFirstName());
             statement.setString(2, employee.getLastName());
@@ -44,14 +47,20 @@ public final class EmployeeModel {
      * @return an Employee containing all the row data
      */
     public static Employee read(int id) {
-        ResultSet rs = Database.query("SELECT * FROM dbo.Employee WHERE id = " + id);
+        ResultSet rs = Database.query(
+            "SELECT * FROM Employee WHERE id = " + id
+        );
 
         try {
             if (rs.next()) {
                 return new Employee(
-                    id, rs.getString("first_name"), rs.getString("last_name"), 
-                    rs.getString("phone_number"), rs.getString("email"), 
-                    rs.getString("password"), rs.getDouble("max_loan")
+                    id,
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("phone_number"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getDouble("max_loan")
                 );
             }
         } catch (SQLException exception) {
@@ -68,13 +77,19 @@ public final class EmployeeModel {
     public static ArrayList<Employee> readAll() {
         ArrayList<Employee> employees = new ArrayList<Employee>();
 
-        try (ResultSet rs = Database.query("SELECT * FROM dbo.Employee")) {
+        try (ResultSet rs = Database.query("SELECT * FROM Employee")) {
             while (rs.next()) {
-                employees.add(new Employee(
-                    rs.getInt("id"), rs.getString("first_name"), rs.getString("last_name"),
-                    rs.getString("phone_number"), rs.getString("email"),
-                    rs.getString("password"), rs.getDouble("max_loan")
-                ));
+                employees.add(
+                    new Employee(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("phone_number"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getDouble("max_loan")
+                    )
+                );
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -97,22 +112,34 @@ public final class EmployeeModel {
      */
     public static ArrayList<Employee> readPage(int page, int amount) {
         int offset = page * amount;
-        ResultSet rs = Database.query(String.format("""
-            SELECT * FROM dbo.Employee 
-            ORDER BY id 
-            OFFSET %d ROWS
-            FETCH NEXT %d ROWS ONLY;
-        """, offset, amount));
+        ResultSet rs = Database.query(
+            String.format(
+                """
+                    SELECT * FROM Employee
+                    ORDER BY id
+                    OFFSET %d ROWS
+                    FETCH NEXT %d ROWS ONLY;
+                """,
+                offset,
+                amount
+            )
+        );
 
         ArrayList<Employee> employees = new ArrayList<Employee>();
 
         try {
             while (rs.next()) {
-                employees.add(new Employee(
-                    rs.getInt("id"), rs.getString("first_name"), rs.getString("last_name"), 
-                    rs.getString("phone_number"), rs.getString("email"), 
-                    rs.getString("password"), rs.getDouble("max_loan")
-                ));
+                employees.add(
+                    new Employee(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("phone_number"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getDouble("max_loan")
+                    )
+                );
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -127,13 +154,16 @@ public final class EmployeeModel {
      */
     public static void update(Employee employee) {
         try {
-            PreparedStatement statement = Database.getConnection().prepareStatement("""
-                UPDATE dbo.Employee
-                SET
-                    first_name = ?, last_name = ?, phone_number = ?,
-                    email = ?, password = ?, max_loan = ?
-                WHERE id = ?;
-            """);
+            PreparedStatement statement = Database.getConnection()
+                .prepareStatement(
+                    """
+                        UPDATE Employee
+                        SET
+                            first_name = ?, last_name = ?, phone_number = ?,
+                            email = ?, password = ?, max_loan = ?
+                        WHERE id = ?;
+                    """
+                );
 
             statement.setString(1, employee.getFirstName());
             statement.setString(2, employee.getLastName());
@@ -155,6 +185,6 @@ public final class EmployeeModel {
      * @return boolean to show if the deletion was successful
      */
     public static boolean delete(int id) {
-        return Database.execute("DELETE FROM dbo.Employee WHERE id = " + id);
+        return Database.execute("DELETE FROM Employee WHERE id = " + id);
     }
 }
