@@ -4,6 +4,7 @@ import javafx.scene.control.TextField;
 
 // Made by Benjamin and Christian
 public class NumericTextField extends TextField {
+
     private boolean allowDecimals;
     private int maxLength;
 
@@ -41,31 +42,14 @@ public class NumericTextField extends TextField {
 
     // Validate if the text is numeric
     private boolean validate(String text) {
-        // If it's empty there's no reason to try parsing it.
         if (text.isEmpty()) {
             return true;
         }
 
-        // If it's blank (contains spaces) or it contains letters then it's not numeric
-        if (text.isBlank() || text.matches(".*[a-zA-Z].*")) {
+        if (!text.matches("[0-9]+(\\.[0-9]*)?")) {
             return false;
         }
 
-        // Validate that input is shorter than max
-        if (maxLength > 0 && text.length() > maxLength) {
-            return false;
-        }
-
-        // If it can be parsed to a double, then it works
-        try {
-            if (allowDecimals) {
-                Double.parseDouble(text);
-            } else {
-                Integer.parseInt(text);
-            }
-            return true;
-        } catch (NumberFormatException exception) {
-            return false;
-        }
+        return (maxLength == -1) || (maxLength > 0 && text.length() < maxLength);
     }
 }
