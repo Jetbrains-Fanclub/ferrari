@@ -18,7 +18,7 @@ public final class LoanModel {
      */
     public static void create(Loan loan) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     String.format(
                         """
@@ -50,7 +50,7 @@ public final class LoanModel {
      * @return a Loan containing all the row data
      */
     public static Loan read(int id) {
-        ResultSet rs = Database.query("SELECT * FROM Loan WHERE id = " + id);
+        var rs = Database.query("SELECT * FROM Loan WHERE id = " + id);
 
         try {
             if (rs.next()) {
@@ -79,9 +79,9 @@ public final class LoanModel {
      * @return an ArrayList of all loans in the database
      */
     public static ArrayList<Loan> readAll() {
-        ArrayList<Loan> loans = new ArrayList<Loan>();
+        var loans = new ArrayList<Loan>();
 
-        try (ResultSet rs = Database.query("SELECT * FROM Loan")) {
+        try (var rs = Database.query("SELECT * FROM Loan")) {
             while (rs.next()) {
                 loans.add(
                     new Loan(
@@ -111,7 +111,7 @@ public final class LoanModel {
      */
     public static void update(Loan loan) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     """
                         UPDATE Loan

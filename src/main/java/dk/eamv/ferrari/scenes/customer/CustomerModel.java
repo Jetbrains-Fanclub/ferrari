@@ -18,7 +18,7 @@ public final class CustomerModel {
      */
     public static void create(Customer customer) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     String.format(
                         """
@@ -34,7 +34,6 @@ public final class CustomerModel {
             statement.setString(4, customer.getEmail());
             statement.setString(5, customer.getAddress());
             statement.setString(6, customer.getCpr());
-
             statement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -47,9 +46,7 @@ public final class CustomerModel {
      * @return Customer containing the database row information
      */
     public static Customer read(int id) {
-        ResultSet rs = Database.query(
-            "SELECT * FROM Customer WHERE id = " + id
-        );
+        var rs = Database.query("SELECT * FROM Customer WHERE id = " + id);
 
         try {
             if (rs.next()) {
@@ -75,9 +72,9 @@ public final class CustomerModel {
      * @return ArrayList of all the Customers in the database
      */
     public static ArrayList<Customer> readAll() {
-        ArrayList<Customer> customers = new ArrayList<Customer>();
+        var customers = new ArrayList<Customer>();
 
-        try (ResultSet rs = Database.query("SELECT * FROM Customer")) {
+        try (var rs = Database.query("SELECT * FROM Customer")) {
             while (rs.next()) {
                 customers.add(
                     new Customer(
@@ -104,7 +101,7 @@ public final class CustomerModel {
      */
     public static void update(Customer customer) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     """
                         UPDATE Customer
@@ -123,7 +120,6 @@ public final class CustomerModel {
             statement.setString(5, customer.getAddress());
             statement.setString(6, customer.getCpr());
             statement.setInt(7, customer.getId());
-
             statement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();

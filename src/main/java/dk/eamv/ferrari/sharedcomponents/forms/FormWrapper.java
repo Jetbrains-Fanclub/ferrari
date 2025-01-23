@@ -12,21 +12,18 @@ import dk.eamv.ferrari.scenes.employee.EmployeeModel;
 import dk.eamv.ferrari.scenes.loan.Loan;
 import dk.eamv.ferrari.scenes.loan.LoanController;
 import dk.eamv.ferrari.scenes.loan.LoanModel;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
 
 // Made by: Christian
 /*
-* Wraps the entire form into a dialog box, then adds buttons and mouselisteners to those buttons.
-* Checks if all fields are full, then ok button runs the query into the database.
-*/
+ * Wraps the entire form into a dialog box, then adds buttons and mouselisteners to those buttons.
+ * Checks if all fields are full, then ok button runs the query into the database.
+ */
 public final class FormWrapper {
+
     private static Dialog<Object> dialog;
     private static Form form;
     private static Button buttonOK = new Button("OK");
@@ -61,7 +58,7 @@ public final class FormWrapper {
         FormInputHandler.setForm(form);
         FormBinder.setForm(form);
     }
-    
+
     /**
      * Creates a dialog based on the CRUD type argument passed, then sets the mouselisteners for it.
      * @param form - the form of the active dialog.
@@ -88,13 +85,13 @@ public final class FormWrapper {
         FormInputHandler.setFieldsCar(car);
         buttonOK.setOnMouseClicked(e -> {
             if (form.verifyHasFilledFields()) {
-                Car newCar = FormInputHandler.getFieldsCar();
+                var newCar = FormInputHandler.getFieldsCar();
                 newCar.setId(car.getId());
                 CarModel.update(newCar);
 
                 //update in TableView
-                ObservableList<Car> cars = CarController.getCars();
-                int index = cars.indexOf(car);
+                var cars = CarController.getCars();
+                var index = cars.indexOf(car);
                 cars.remove(index);
                 cars.add(index, newCar);
 
@@ -102,7 +99,7 @@ public final class FormWrapper {
             }
         });
     }
-    
+
     /**
      * Opens a dialog, then fills it with the properties of the Customer object, allowing the user to change the fields.
      * @param form - the form of the active dialog.
@@ -114,13 +111,13 @@ public final class FormWrapper {
         FormInputHandler.setFieldsCustomer(customer);
         buttonOK.setOnMouseClicked(e -> {
             if (form.verifyHasFilledFields()) {
-                Customer newCustomer = FormInputHandler.getFieldsCustomer();
+                var newCustomer = FormInputHandler.getFieldsCustomer();
                 newCustomer.setId(customer.getId());
                 CustomerModel.update(newCustomer);
 
-                //update in TableView 
-                ObservableList<Customer> customers = CustomerController.getCustomers();
-                int index = customers.indexOf(customer);
+                //update in TableView
+                var customers = CustomerController.getCustomers();
+                var index = customers.indexOf(customer);
                 customers.remove(index);
                 customers.add(index, newCustomer);
 
@@ -140,13 +137,13 @@ public final class FormWrapper {
         FormInputHandler.setFieldsEmployee(employee);
         buttonOK.setOnMouseClicked(e -> {
             if (form.verifyHasFilledFields()) {
-                Employee newEmployee = FormInputHandler.getFieldsEmployee();
+                var newEmployee = FormInputHandler.getFieldsEmployee();
                 newEmployee.setId(employee.getId());
                 EmployeeModel.update(newEmployee);
 
                 //update in TableView
-                ObservableList<Employee> employees = EmployeeController.getEmployees();
-                int index = employees.indexOf(employee);
+                var employees = EmployeeController.getEmployees();
+                var index = employees.indexOf(employee);
                 employees.remove(index);
                 employees.add(index, newEmployee);
 
@@ -165,9 +162,9 @@ public final class FormWrapper {
         initDialog();
 
         //query DB for objects matching ID.
-        Car car = CarModel.read(loan.getCar_id());
-        Customer customer = CustomerModel.read(loan.getCustomer_id());
-        Employee employee = EmployeeModel.read(loan.getEmployee_id());
+        var car = CarModel.read(loan.getCar_id());
+        var customer = CustomerModel.read(loan.getCustomer_id());
+        var employee = EmployeeModel.read(loan.getEmployee_id());
 
         FormBinder.applyLoanFormBinds();
         FormInputHandler.setFieldsLoan(car, customer, employee, loan);
@@ -175,12 +172,12 @@ public final class FormWrapper {
 
         buttonOK.setOnMouseClicked(e -> {
             if (form.verifyHasFilledFields()) {
-                Loan newLoan = FormInputHandler.getFieldsLoan();
+                var newLoan = FormInputHandler.getFieldsLoan();
                 newLoan.setId(loan.getId());
                 LoanModel.update(newLoan);
 
-                //update in TableView 
-                ObservableList<Loan> loans = LoanController.getLoans();
+                //update in TableView
+                var loans = LoanController.getLoans();
                 loans.remove(loan);
                 loans.add(newLoan);
             }
@@ -195,27 +192,27 @@ public final class FormWrapper {
 
         // Close the dialog when pressing X
         // https://stackoverflow.com/a/36262208
-        Window window = dialog.getDialogPane().getScene().getWindow();
+        var window = dialog.getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(event -> window.hide());
 
-        DialogPane dialogPane = dialog.getDialogPane();
+        var dialogPane = dialog.getDialogPane();
         dialogPane.getStylesheets().add("dialog.css");
         dialogPane.getStyleClass().add("dialog");
 
-        Button buttonCancel = new Button("Fortryd");
+        var buttonCancel = new Button("Fortryd");
         buttonCancel.setOnMouseClicked(e -> {
             closeDialog(dialog);
         });
 
-        Label statusLabel = FormStatusHandler.getStatusLabel();
+        var statusLabel = FormStatusHandler.getStatusLabel();
         statusLabel.setVisible(false);
 
-        HBox buttons = new HBox(buttonCancel, buttonOK, form.getForwardBoss(), statusLabel);
+        var buttons = new HBox(buttonCancel, buttonOK, form.getForwardBoss(), statusLabel);
         buttons.setSpacing(25);
 
-        VBox vBox = new VBox(form.getGridPane(), buttons);
+        var vBox = new VBox(form.getGridPane(), buttons);
         vBox.setSpacing(50);
-        
+
         dialog.getDialogPane().setContent(vBox);
     }
 

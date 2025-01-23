@@ -19,10 +19,10 @@ public class SearchContainer extends HBox {
      * @param textField the instance of a TextField to be contained
      */
     public SearchContainer(TextField textField) {
-        SVGPath icon = new SVGPath();
+        var icon = new SVGPath();
         icon.setContent(SVGResources.getSearchIcon());
 
-        VBox iconContainer = new VBox(icon);
+        var iconContainer = new VBox(icon);
         iconContainer.setAlignment(Pos.CENTER);
 
         getStyleClass().add("search-container");

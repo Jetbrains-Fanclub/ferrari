@@ -11,6 +11,7 @@ import java.util.Random;
  * @see #todaysRate()
  */
 public class InterestRate {
+
     private static InterestRate instance = null;
     private static Random rnd = new Random();
 
@@ -19,8 +20,7 @@ public class InterestRate {
      * Visibility is relaxed from private to protected for testing purposes.
      * The constructor should never be invoked outside of the class.
      */
-    protected InterestRate() {
-    }
+    protected InterestRate() {}
 
     // returns random double between 3.0 and 9.0, based on todays date
 
@@ -30,10 +30,8 @@ public class InterestRate {
     public double todaysRate() {
         randomDelay(1.0, 2.0);
 
-        LocalDate today = LocalDate.now();
-
-        int seed = today.getDayOfMonth() + today.getMonthValue() + today.getYear();
-
+        var today = LocalDate.now();
+        var seed = today.getDayOfMonth() + today.getMonthValue() + today.getYear();
         return new Random(1000 * seed).nextDouble() * 6.0 + 3.0;
     }
 
@@ -41,8 +39,9 @@ public class InterestRate {
      * @return The Singleton instance
      */
     public static InterestRate i() {
-        if (instance == null)
+        if (instance == null) {
             instance = new InterestRate();
+        }
 
         return instance;
     }
@@ -50,8 +49,7 @@ public class InterestRate {
     // min, max in secs
     private void randomDelay(double min, double max) {
         try {
-            double delaySecs = rnd.nextDouble() * (max - min) + min;
-
+            var delaySecs = rnd.nextDouble() * (max - min) + min;
             Thread.sleep((long) (delaySecs * 1000));
         } catch (InterruptedException e) {
             // ignore

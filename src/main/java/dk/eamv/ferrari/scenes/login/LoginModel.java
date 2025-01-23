@@ -13,14 +13,12 @@ public class LoginModel {
 
     public static Employee authenticate(String email, String password) {
         try {
-            PreparedStatement statement = Database.getConnection()
-                .prepareStatement(
-                    "SELECT id FROM Employee WHERE email = ? AND password = ?"
-                );
+            var statement = Database.getConnection()
+                .prepareStatement("SELECT id FROM Employee WHERE email = ? AND password = ?");
             statement.setString(1, email);
             statement.setString(2, password);
 
-            ResultSet rs = statement.executeQuery();
+            var rs = statement.executeQuery();
             if (rs.next()) {
                 return EmployeeModel.read(rs.getInt("id"));
             }

@@ -17,25 +17,28 @@ public class EmailService {
      */
     public static void sendEmail() {
         Email email = EmailBuilder.startingBlank()
-                .from("Sælgeren", "EMAIL_ADDRESS_HERE")
-                .to("Salgschefen", "TO_EMAIL_ADDRESS_HERE")
-                .withSubject("Lån overskrider min grænse")
-                .withPlainText("""
-                        Hej salgschef
-                        
-                        Jeg har oprettet et lånetilbud som overskrider min tilladte beløbsgrænse.
-                        Vil du godkende aftalen?
-                        
-                        Mvh
-                        Sælger
-                        """)
-                .buildEmail();
+            .from("Sælgeren", "EMAIL_ADDRESS_HERE")
+            .to("Salgschefen", "TO_EMAIL_ADDRESS_HERE")
+            .withSubject("Lån overskrider min grænse")
+            .withPlainText(
+                """
+                Hej salgschef
+
+                Jeg har oprettet et lånetilbud som overskrider min tilladte beløbsgrænse.
+                Vil du godkende aftalen?
+
+                Mvh
+                Sælger
+                """
+            )
+            .buildEmail();
 
         // Sends the email on a new thread to keep the system responsive.
-        new Thread(() -> MailerBuilder
-                .withSMTPServer("Smtp.gmail.com", 587, "EMAIL_ADDRESS_HERE", "EMAIL_PASSWORD_HERE")
+        new Thread(() ->
+            MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "EMAIL_ADDRESS_HERE", "EMAIL_PASSWORD_HERE")
                 .withTransportStrategy(TransportStrategy.SMTP_TLS)
                 .buildMailer()
-                .sendMail(email)).start();
+                .sendMail(email)
+        ).start();
     }
 }

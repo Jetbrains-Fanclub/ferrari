@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 
 // Made by: Benjamin and Christian
 public class FormThreadHandler {
+
     private static Button buttonOK = FormWrapper.getButtonOK();
 
     protected static void checkRKI() {
@@ -23,8 +24,8 @@ public class FormThreadHandler {
                 FormStatusHandler.displayStatusMessage("Finder kreditværdighed for kunde");
             });
 
-            String cpr = customer.getCpr();
-            Rating creditRating = CreditRator.i().rate(cpr);
+            var cpr = customer.getCpr();
+            var creditRating = CreditRator.i().rate(cpr);
 
             FormBinder.setCustomersCreditScore(creditRating);
             FormBinder.calculateInterestRate();
@@ -35,7 +36,7 @@ public class FormThreadHandler {
                 } else {
                     FormStatusHandler.hideStatusLabel();
                 }
-                
+
                 buttonOK.setDisable(false);
             });
         }).start();

@@ -4,6 +4,7 @@ import javafx.scene.control.Label;
 
 // Made by: Benjamin and Christian
 public class FormStatusHandler {
+
     private static Label statusLabel = new Label();
 
     protected static Label getStatusLabel() {
@@ -15,11 +16,13 @@ public class FormStatusHandler {
      * @param message - the message to be displayed
      */
     protected static void displayErrorMessage(String message) {
-        statusLabel.setStyle("""
-            -fx-text-fill: red;
-            -fx-font-size: 20px;
-            -fx-font-weight: bold;
-        """);
+        statusLabel.setStyle(
+            """
+                -fx-text-fill: red;
+                -fx-font-size: 20px;
+                -fx-font-weight: bold;
+            """
+        );
         statusLabel.setText(message);
         statusLabel.setVisible(true);
     }
@@ -29,15 +32,17 @@ public class FormStatusHandler {
      * @param message - the message to be displayed
      */
     protected static void displayStatusMessage(String message) {
-        statusLabel.setStyle("""
-            -fx-text-fill: gold;
-            -fx-font-size: 20px;
-            -fx-font-weight: bold;
-        """);
+        statusLabel.setStyle(
+            """
+                -fx-text-fill: gold;
+                -fx-font-size: 20px;
+                -fx-font-weight: bold;
+            """
+        );
         statusLabel.setText(message);
         statusLabel.setVisible(true);
     }
-    
+
     /**
      * Hides the statusLabel in the dialog.
      */

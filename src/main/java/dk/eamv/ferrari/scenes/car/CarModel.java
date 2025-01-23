@@ -18,7 +18,7 @@ public final class CarModel {
      */
     public static void create(Car car) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     String.format(
                         """
@@ -31,7 +31,6 @@ public final class CarModel {
             statement.setString(1, car.getModel());
             statement.setInt(2, car.getYear());
             statement.setDouble(3, car.getPrice());
-
             statement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -39,16 +38,11 @@ public final class CarModel {
     }
 
     public static Car read(int id) {
-        ResultSet rs = Database.query("SELECT * FROM Car WHERE id = " + id);
+        var rs = Database.query("SELECT * FROM Car WHERE id = " + id);
 
         try {
             if (rs.next()) {
-                return new Car(
-                    id,
-                    rs.getString("model"),
-                    rs.getInt("year"),
-                    rs.getDouble("price")
-                );
+                return new Car(id, rs.getString("model"), rs.getInt("year"), rs.getDouble("price"));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -62,18 +56,11 @@ public final class CarModel {
      * @return ArrayList of all the cars in the database
      */
     public static ArrayList<Car> readAll() {
-        ArrayList<Car> cars = new ArrayList<Car>();
+        var cars = new ArrayList<Car>();
 
         try (ResultSet rs = Database.query("SELECT * FROM Car")) {
             while (rs.next()) {
-                cars.add(
-                    new Car(
-                        rs.getInt("id"),
-                        rs.getString("model"),
-                        rs.getInt("year"),
-                        rs.getDouble("price")
-                    )
-                );
+                cars.add(new Car(rs.getInt("id"), rs.getString("model"), rs.getInt("year"), rs.getDouble("price")));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -88,7 +75,7 @@ public final class CarModel {
      */
     public static void update(Car car) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     """
                         UPDATE Car
@@ -101,7 +88,6 @@ public final class CarModel {
             statement.setInt(2, car.getYear());
             statement.setDouble(3, car.getPrice());
             statement.setInt(4, car.getId());
-
             statement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();

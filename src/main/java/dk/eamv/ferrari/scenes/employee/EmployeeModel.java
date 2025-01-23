@@ -18,7 +18,7 @@ public final class EmployeeModel {
      */
     public static void create(Employee employee) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     String.format(
                         """
@@ -47,9 +47,7 @@ public final class EmployeeModel {
      * @return an Employee containing all the row data
      */
     public static Employee read(int id) {
-        ResultSet rs = Database.query(
-            "SELECT * FROM Employee WHERE id = " + id
-        );
+        var rs = Database.query("SELECT * FROM Employee WHERE id = " + id);
 
         try {
             if (rs.next()) {
@@ -75,9 +73,9 @@ public final class EmployeeModel {
      * @return an ArrayList of Employees
      */
     public static ArrayList<Employee> readAll() {
-        ArrayList<Employee> employees = new ArrayList<Employee>();
+        var employees = new ArrayList<Employee>();
 
-        try (ResultSet rs = Database.query("SELECT * FROM Employee")) {
+        try (var rs = Database.query("SELECT * FROM Employee")) {
             while (rs.next()) {
                 employees.add(
                     new Employee(
@@ -111,8 +109,8 @@ public final class EmployeeModel {
      * @return an ArrayList of Employees
      */
     public static ArrayList<Employee> readPage(int page, int amount) {
-        int offset = page * amount;
-        ResultSet rs = Database.query(
+        var offset = page * amount;
+        var rs = Database.query(
             String.format(
                 """
                     SELECT * FROM Employee
@@ -125,8 +123,7 @@ public final class EmployeeModel {
             )
         );
 
-        ArrayList<Employee> employees = new ArrayList<Employee>();
-
+        var employees = new ArrayList<Employee>();
         try {
             while (rs.next()) {
                 employees.add(
@@ -154,7 +151,7 @@ public final class EmployeeModel {
      */
     public static void update(Employee employee) {
         try {
-            PreparedStatement statement = Database.getConnection()
+            var statement = Database.getConnection()
                 .prepareStatement(
                     """
                         UPDATE Employee
@@ -172,7 +169,6 @@ public final class EmployeeModel {
             statement.setString(5, employee.getPassword());
             statement.setDouble(6, employee.getMaxLoan());
             statement.setInt(7, employee.getId());
-
             statement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();

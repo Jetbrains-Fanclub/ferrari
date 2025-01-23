@@ -10,8 +10,11 @@ import javafx.collections.ObservableList;
 // Made by: Mikkel
 // Modified by: Benjamin (extended CRUD for sales manager)
 public class EmployeeController {
+
     protected static FilteredTableBuilder<Employee> filteredTableBuilder;
-    private static final ObservableList<Employee> employees = FXCollections.observableArrayList(EmployeeModel.readAll());
+    private static final ObservableList<Employee> employees = FXCollections.observableArrayList(
+        EmployeeModel.readAll()
+    );
 
     protected static void initFilterBuilder() {
         filteredTableBuilder = new FilteredTableBuilder<Employee>()
@@ -22,7 +25,7 @@ public class EmployeeController {
             .withColumn("Telefonnummer", Employee::getPhoneNumber)
             .withColumn("Email", Employee::getEmail)
             .withColumn("Max lån (DKK)", Employee::getMaxLoan);
-            
+
         if (SessionManager.getUser().isSalesManager()) {
             filteredTableBuilder
                 .withButtonColumn(SVGResources.getDeleteIcon(), EmployeeController::deleteEmployee)
@@ -40,7 +43,6 @@ public class EmployeeController {
 
     protected static void updateEmployee(Employee employee) {
         FormFactory.updateEmployeeFormDialogBox(employee);
-
         EmployeeView.refreshTableView();
     }
 

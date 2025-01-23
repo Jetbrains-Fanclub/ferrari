@@ -5,17 +5,13 @@ import dk.eamv.ferrari.scenes.customer.Customer;
 import dk.eamv.ferrari.scenes.employee.Employee;
 import dk.eamv.ferrari.scenes.loan.Loan;
 import dk.eamv.ferrari.scenes.loan.LoanStatus;
-
+import dk.eamv.ferrari.sharedcomponents.nodes.AutoCompleteComboBox;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import dk.eamv.ferrari.sharedcomponents.nodes.AutoCompleteComboBox;
-import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
@@ -29,6 +25,7 @@ import javafx.util.StringConverter;
  * The setFields<Entity> methods set the input in the fields, based on the object, passed in the argument.
  */
 public class FormInputHandler {
+
     private static Form form;
 
     /**
@@ -52,34 +49,53 @@ public class FormInputHandler {
      * @return the Customer object based on the input of the form.
      */
     protected static Customer getFieldsCustomer() {
-        return new Customer(getString("Fornavn"), getString("Efternavn"), getString("Telefonnummer"), getString("Email"), getString("Adresse"), getString("CPR"));
+        return new Customer(
+            getString("Fornavn"),
+            getString("Efternavn"),
+            getString("Telefonnummer"),
+            getString("Email"),
+            getString("Adresse"),
+            getString("CPR")
+        );
     }
-    
+
     /**
      * Reads the input of the fields and returns an Employee object based on the input.
      * @return the Employee object based on the input of the form.
      */
     protected static Employee getFieldsEmployee() {
-        return new Employee(getString("Fornavn"), getString("Efternavn"), getString("Telefon nr."), getString("Email"), getString("Kodeord"), getDouble("Udlånsgrænse"));
+        return new Employee(
+            getString("Fornavn"),
+            getString("Efternavn"),
+            getString("Telefon nr."),
+            getString("Email"),
+            getString("Kodeord"),
+            getDouble("Udlånsgrænse")
+        );
     }
-    
+
     /**
      * Reads the input of the fields and returns a Loan object based on the input.
      * @return the Loan object based on the input of the form.
      */
     protected static Loan getFieldsLoan() {
-        Car car = getEntityFromComboBox("Bil");
-        Customer customer = getEntityFromComboBox("CPR & Kunde");
-        Employee employee = getEntityFromComboBox("Medarbejder");
-        Loan loan = new Loan(
-            car.getId(), customer.getId(), employee.getId(),
-            getDouble("Lånets størrelse"), getDouble("Udbetaling"), getDouble("Rente"),
-            getSelectedDate("Start dato DD/MM/ÅÅÅÅ"), getSelectedDate("Slut dato DD/MM/ÅÅÅÅ"),
+        var car = FormInputHandler.<Car>getEntityFromComboBox("Bil");
+        var customer = FormInputHandler.<Customer>getEntityFromComboBox("CPR & Kunde");
+        var employee = FormInputHandler.<Employee>getEntityFromComboBox("Medarbejder");
+        var loan = new Loan(
+            car.getId(),
+            customer.getId(),
+            employee.getId(),
+            getDouble("Lånets størrelse"),
+            getDouble("Udbetaling"),
+            getDouble("Rente"),
+            getSelectedDate("Start dato DD/MM/ÅÅÅÅ"),
+            getSelectedDate("Slut dato DD/MM/ÅÅÅÅ"),
             new LoanStatus(3)
         );
         return loan;
     }
-    
+
     /**
      * Casts the Control of the fieldmap into a TextField, then returns the value.
      * @param key - the String/Header of the TextField.
@@ -98,7 +114,7 @@ public class FormInputHandler {
     protected static int getInt(String key) {
         return Integer.valueOf(getString(key));
     }
-    
+
     /**
      * Calls getString() and converts into a double.
      * @see #getString(String)
@@ -106,8 +122,8 @@ public class FormInputHandler {
      * @return the double value of the input, with ","s converted to "."s.
      */
     protected static double getDouble(String key) {
-        String rawValue = getString(key);
-        String formattedValue = rawValue.replace(",", ".");
+        var rawValue = getString(key);
+        var formattedValue = rawValue.replace(",", ".");
         return Double.valueOf(formattedValue);
     }
 
@@ -118,9 +134,9 @@ public class FormInputHandler {
      * @return the Date of DatePicker.
      */
     protected static Date getSelectedDate(String key) {
-        DatePicker datePicker = getDatePicker(key);
-        LocalDate localDate = datePicker.getValue();
-        Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+        var datePicker = getDatePicker(key);
+        var localDate = datePicker.getValue();
+        var instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
         return Date.from(instant);
     }
 
@@ -141,12 +157,11 @@ public class FormInputHandler {
      * @param car - a Car object, whose propperties will fill the form.
      */
     protected static void setFieldsCar(Car car) {
-        ArrayList<String> input = car.getPropperties();
-        HashMap<String, Control> fieldMap = form.getFieldMap();
+        var input = car.getProperties();
+        var fieldMap = form.getFieldMap();
 
-        int counter = 0;
-
-        for (Control field : fieldMap.values()) {
+        var counter = 0;
+        for (var field : fieldMap.values()) {
             ((TextField) field).setText(input.get(counter));
             counter++;
         }
@@ -157,12 +172,11 @@ public class FormInputHandler {
      * @param customer - a Customer object, whose propperties will fill the form.
      */
     protected static void setFieldsCustomer(Customer customer) {
-        ArrayList<String> input = customer.getPropperties();
-        HashMap<String, Control> fieldMap = form.getFieldMap();
+        var input = customer.getProperties();
+        var fieldMap = form.getFieldMap();
 
-        int counter = 0;
-
-        for (Control field : fieldMap.values()) {
+        var counter = 0;
+        for (var field : fieldMap.values()) {
             ((TextField) field).setText(input.get(counter));
             counter++;
         }
@@ -173,17 +187,16 @@ public class FormInputHandler {
      * @param employee - an Employee object, whose propperties will fill the form.
      */
     protected static void setFieldsEmployee(Employee employee) {
-        ArrayList<String> input = employee.getPropperties();
-        HashMap<String, Control> fieldMap = form.getFieldMap();
+        var input = employee.getProperties();
+        var fieldMap = form.getFieldMap();
 
-        int counter = 0;
-
-        for (Control field : fieldMap.values()) {
+        var counter = 0;
+        for (var field : fieldMap.values()) {
             ((TextField) field).setText(input.get(counter));
             counter++;
         }
     }
-    
+
     /**
      * @param car - a Car object, whose propperties will fill the form.
      * @param customer - a Customer object, whose propperties will fill the form.
@@ -197,7 +210,7 @@ public class FormInputHandler {
         setDatePicker("Start dato DD/MM/ÅÅÅÅ", String.valueOf(loan.getStartDate()));
         setDatePicker("Slut dato DD/MM/ÅÅÅÅ", String.valueOf(loan.getEndDate()));
     }
-    
+
     /**
      * @param key - the String/Header of the TextField.
      * @param text - the text to be set.
@@ -224,41 +237,42 @@ public class FormInputHandler {
     protected static void setDatePicker(String key, String date) {
         System.out.println("date argument" + date);
         DatePicker datePicker = getDatePicker(key);
-        datePicker.setConverter(new StringConverter<LocalDate>() {
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            
-            @Override //Date -> String. Called when setting the date
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
+        datePicker.setConverter(
+            new StringConverter<LocalDate>() {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+                @Override //Date -> String. Called when setting the date
+                public String toString(LocalDate date) {
+                    if (date != null) {
+                        return dateFormatter.format(date);
+                    } else {
+                        return "";
+                    }
                 }
-            }
 
-            @Override // Date <- String
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    try {
-                        // Convert from "yyyy-MM-dd" to "dd/MM/yyyy"
-                        LocalDate originalDate = LocalDate.parse(string, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        String formattedDate = dateFormatter.format(originalDate);
-                        return LocalDate.parse(formattedDate, dateFormatter);
-
-                    } catch (DateTimeParseException e) {
-                        // Handle the parsing exception
-                        System.out.println("Error parsing date: " + string);
+                @Override // Date <- String
+                public LocalDate fromString(String string) {
+                    if (string != null && !string.isEmpty()) {
+                        try {
+                            // Convert from "yyyy-MM-dd" to "dd/MM/yyyy"
+                            var originalDate = LocalDate.parse(string, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            var formattedDate = dateFormatter.format(originalDate);
+                            return LocalDate.parse(formattedDate, dateFormatter);
+                        } catch (DateTimeParseException e) {
+                            // Handle the parsing exception
+                            System.out.println("Error parsing date: " + string);
+                            return null;
+                        }
+                    } else {
                         return null;
                     }
-                } else {
-                    return null;
                 }
             }
-        });
-        LocalDate localDate = datePicker.getConverter().fromString(date);
+        );
+        var localDate = datePicker.getConverter().fromString(date);
         datePicker.setValue(localDate);
     }
-    
+
     /**
      * Finds the Control in the hashmap, and casts it into a TextField.
      * @param key - the String/Header of the TextField.
@@ -274,7 +288,7 @@ public class FormInputHandler {
      * @return the matching AutoCompleteComboBox.
      */
     protected static <E> AutoCompleteComboBox<E> getAutoCompleteComboBox(String key) {
-        return (AutoCompleteComboBox<E>) form.getFieldMap().get(key);
+        return (AutoCompleteComboBox<E>) form.getFieldMap().<E>get(key);
     }
 
     /**

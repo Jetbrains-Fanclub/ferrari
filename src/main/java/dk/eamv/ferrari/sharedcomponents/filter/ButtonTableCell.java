@@ -1,10 +1,9 @@
 package dk.eamv.ferrari.sharedcomponents.filter;
 
+import java.util.function.Consumer;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.shape.SVGPath;
-
-import java.util.function.Consumer;
 
 // Made by: Mikkel
 
@@ -15,6 +14,7 @@ import java.util.function.Consumer;
  * @see FilteredTableBuilder
  */
 public class ButtonTableCell<T> extends TableCell<T, Void> {
+
     private final Button btn;
 
     /**
@@ -39,7 +39,7 @@ public class ButtonTableCell<T> extends TableCell<T, Void> {
      * @return the created button
      */
     private Button createButton(String name, Consumer<T> action) {
-        Button button = new Button(name);
+        var button = new Button(name);
         button.setOnAction(e -> handleButtonClick(action));
         return button;
     }
@@ -52,16 +52,15 @@ public class ButtonTableCell<T> extends TableCell<T, Void> {
      * @return the created button
      */
     private Button createIconButton(String svg, Consumer<T> action) {
-        Button button = new Button();
+        var button = new Button();
         button.getStyleClass().add("icon-button");
 
-        SVGPath icon = new SVGPath();
+        var icon = new SVGPath();
         icon.setContent(svg);
         icon.setScaleX(1.3);
         icon.setScaleY(1.3);
 
         button.setGraphic(icon);
-
         button.setOnAction(e -> handleButtonClick(action));
         return button;
     }
@@ -72,7 +71,7 @@ public class ButtonTableCell<T> extends TableCell<T, Void> {
      * @param action the action to perform when the button is clicked
      */
     private void handleButtonClick(Consumer<T> action) {
-        T item = getTableView().getItems().get(getIndex());
+        var item = getTableView().getItems().get(getIndex());
         action.accept(item);
     }
 

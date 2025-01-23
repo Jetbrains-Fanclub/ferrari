@@ -1,6 +1,12 @@
 package dk.eamv.ferrari.sharedcomponents.filter;
 
 import dk.eamv.ferrari.scenes.loan.LoanStatus;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -9,13 +15,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 // Made by: Mikkel
 
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
  */
 
 public class FilteredTableBuilder<T> implements FilteredTableBuilderInfo<T> {
+
     private ObservableList<T> data;
     /**
      * <p> {@code String} - the name of the column.</p>
@@ -76,7 +76,6 @@ public class FilteredTableBuilder<T> implements FilteredTableBuilderInfo<T> {
      * @return Itself in order to allow for method chaining when configuring the instance of the builder
      */
     public FilteredTableBuilder<T> withColumn(String columnName, Function<T, Object> propertyValueGetter) {
-
         // Every time this method is called, a specific column and its list of Value Getter methods is added to the list
         columnInfo.add(new Pair<>(columnName, propertyValueGetter));
         return this;
@@ -84,41 +83,49 @@ public class FilteredTableBuilder<T> implements FilteredTableBuilderInfo<T> {
 
     public FilteredTableBuilder<T> withStatusColumn(String columnName, Function<T, LoanStatus> loanStatusGetter) {
         TableColumn<T, LoanStatus> statusColumn = new TableColumn<>(columnName);
-        statusColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(loanStatusGetter.apply(cellData.getValue())));
+        statusColumn.setCellValueFactory(cellData ->
+            new ReadOnlyObjectWrapper<>(loanStatusGetter.apply(cellData.getValue()))
+        );
 
-        statusColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(LoanStatus item, boolean empty) {
-                super.updateItem(item, empty);
+        statusColumn.setCellFactory(column ->
+            new TableCell<>() {
+                @Override
+                protected void updateItem(LoanStatus item, boolean empty) {
+                    super.updateItem(item, empty);
 
-                if (item == null || empty) {
-                    setText(null);
-                } else {
-                    // Update the text and colour depending on LoanState enum
-                    setText(item.getDisplayName());
-                    switch (item.getState()) {
-                        case PENDING -> setTextFill(Color.ORANGE);
-                        case APPROVED -> setTextFill(Color.GREEN);
-                        case REJECTED -> setTextFill(Color.RED);
-                        case ACTIVE -> setTextFill(Color.web("#323232"));
-                        case COMPLETED -> setTextFill(Color.GRAY);
-                        default -> setTextFill(Color.BLACK);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Update the text and colour depending on LoanState enum
+                        setText(item.getDisplayName());
+                        switch (item.getState()) {
+                            case PENDING -> setTextFill(Color.ORANGE);
+                            case APPROVED -> setTextFill(Color.GREEN);
+                            case REJECTED -> setTextFill(Color.RED);
+                            case ACTIVE -> setTextFill(Color.web("#323232"));
+                            case COMPLETED -> setTextFill(Color.GRAY);
+                            default -> setTextFill(Color.BLACK);
+                        }
                     }
                 }
             }
-        });
+        );
 
         statusColumns.add(statusColumn);
         return this;
     }
 
-    public FilteredTableBuilder<T> withProgressColumn(String columnName, Function<T, Date> startDateGetter, Function<T, Date> endDateGetter) {
-        TableColumn<T, Double> progressColumn = new TableColumn<>(columnName);
+    public FilteredTableBuilder<T> withProgressColumn(
+        String columnName,
+        Function<T, Date> startDateGetter,
+        Function<T, Date> endDateGetter
+    ) {
+        var progressColumn = new TableColumn<T, Double>(columnName);
         progressColumn.setCellValueFactory(cellData -> {
-            long start = startDateGetter.apply(cellData.getValue()).getTime();
-            long end = endDateGetter.apply(cellData.getValue()).getTime();
-            long current = new Date().getTime();
-            double progress = (double) (current - start) / (end - start);
+            var start = startDateGetter.apply(cellData.getValue()).getTime();
+            var end = endDateGetter.apply(cellData.getValue()).getTime();
+            var current = new Date().getTime();
+            var progress = (double) (current - start) / (end - start);
 
             /* We make sure the progress is not below 0 or above 1
              * The main problem it is solving is the progress being negative, if: current date < start date
@@ -128,28 +135,29 @@ public class FilteredTableBuilder<T> implements FilteredTableBuilderInfo<T> {
              */
             progress = Math.max(0, Math.min(1, progress));
 
-
             return new ReadOnlyObjectWrapper<>(progress);
         });
 
-        progressColumn.setCellFactory(column -> new TableCell<>() {
-            private final ProgressBar progressBar = new ProgressBar();
+        progressColumn.setCellFactory(column ->
+            new TableCell<>() {
+                private final ProgressBar progressBar = new ProgressBar();
 
-            @Override
-            protected void updateItem(Double progress, boolean empty) {
-                super.updateItem(progress, empty);
+                @Override
+                protected void updateItem(Double progress, boolean empty) {
+                    super.updateItem(progress, empty);
 
-                if (empty || progress == null) {
-                    setGraphic(null);
-                } else {
-                    progressBar.setProgress(progress);
-                    if (progress == 1) {
-                        progressBar.getStyleClass().add("progress-bar-finished");
+                    if (empty || progress == null) {
+                        setGraphic(null);
+                    } else {
+                        progressBar.setProgress(progress);
+                        if (progress == 1) {
+                            progressBar.getStyleClass().add("progress-bar-finished");
+                        }
+                        setGraphic(progressBar);
                     }
-                    setGraphic(progressBar);
                 }
             }
-        });
+        );
 
         // Add the progress column to the separate list
         progressColumns.add(progressColumn);
@@ -173,9 +181,11 @@ public class FilteredTableBuilder<T> implements FilteredTableBuilderInfo<T> {
 
     public FilteredTable<T> build() {
         filteredTable = new FilteredTable<>(data);
-        for (Pair<String, Function<T, Object>> info : columnInfo) {
-            TableColumn<T, Object> column = new TableColumn<>(info.getKey());
-            column.setCellValueFactory(cellData -> new SimpleObjectProperty<>(info.getValue().apply(cellData.getValue())));
+        for (var info : columnInfo) {
+            var column = new TableColumn<T, Object>(info.getKey());
+            column.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(info.getValue().apply(cellData.getValue()))
+            );
             filteredTable.getColumns().add(column);
         }
 

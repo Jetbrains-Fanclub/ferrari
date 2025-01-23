@@ -29,12 +29,12 @@ public class NumericTextField extends TextField {
     @Override
     public void replaceText(int start, int end, String text) {
         // Save the previous text for restoration if invalid input
-        String prev = getText();
+        var prev = getText();
         super.replaceText(start, end, text.trim());
 
         // Validate the text, reset the text and caret if not numeric
         if (!validate(getText())) {
-            int position = getCaretPosition();
+            var position = getCaretPosition();
             setText(prev);
             positionCaret(position);
         }

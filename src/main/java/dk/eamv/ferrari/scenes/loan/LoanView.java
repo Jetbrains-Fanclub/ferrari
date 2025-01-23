@@ -15,17 +15,17 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class LoanView {
+
     private static FilteredTable<Loan> tableView;
     private static SearchContainer searchContainer;
     private static Button buttonCreate;
 
     public static BorderPane getScene() {
-        BorderPane scene = new BorderPane();
+        var scene = new BorderPane();
 
         scene.setLeft(SidebarView.getSidebarView());
-        SidebarView.getSidebarView().setActiveToggleButton(SidebarButton.LOANS);
-
         scene.setCenter(getLoanView());
+        SidebarView.getSidebarView().setActiveToggleButton(SidebarButton.LOANS);
 
         return scene;
     }
@@ -37,13 +37,13 @@ public class LoanView {
         initSearchContainer();
         initButtonCreate();
 
-        HBox containerAboveTable = new HBox();
+        var containerAboveTable = new HBox();
         containerAboveTable.setAlignment(Pos.CENTER_LEFT);
         containerAboveTable.setPadding(new Insets(0, 10, 0, 0));
         containerAboveTable.setSpacing(10);
         containerAboveTable.getChildren().addAll(searchContainer, buttonCreate); // Put search box top right of table
 
-        VBox tableContainer = new VBox();
+        var tableContainer = new VBox();
         tableContainer.setAlignment(Pos.BOTTOM_CENTER);
         tableContainer.setMaxWidth(Double.MAX_VALUE);
         tableContainer.setPadding(new Insets(25));
@@ -51,16 +51,13 @@ public class LoanView {
         tableContainer.getStyleClass().add("table-view-container");
         tableContainer.getChildren().addAll(containerAboveTable, tableView);
 
-
         // Apply drop shadow to parentContainer to avoid applying it to VBox children
-        StackPane parentContainer = new StackPane(tableContainer);
+        var parentContainer = new StackPane(tableContainer);
         parentContainer.getStyleClass().add("drop-shadow-effect");
 
-
-        StackPane window = new StackPane(parentContainer);
+        var window = new StackPane(parentContainer);
         window.setPadding(new Insets(50));
         window.setStyle("-fx-background-color: lightgrey");
-
         return window;
     }
 
@@ -68,8 +65,8 @@ public class LoanView {
         tableView = LoanController.filteredTableBuilder.build();
         tableView.setPrefHeight(1200);
         tableView.setRowFactory(tableview -> {
-            TableRow<Loan> row = new TableRow<>();
-            return row ;
+            var row = new TableRow<Loan>();
+            return row;
         });
     }
 
@@ -80,7 +77,6 @@ public class LoanView {
     private static void initButtonCreate() {
         buttonCreate = new Button("Opret ny låneaftale");
         buttonCreate.getStyleClass().add("create-button");
-
         buttonCreate.setOnAction(e -> LoanController.showCreateLoan());
     }
 

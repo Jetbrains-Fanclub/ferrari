@@ -25,24 +25,25 @@ import javafx.scene.shape.SVGPath;
 // Made by: Christian
 // Modified by: Mikkel (CSS og små visuelle ændringer)
 public class LoginView implements ToggleVisible {
+
     private static TextField usernameTextField;
     private static PasswordField passwordPasswordField;
     private static final Button loginButton = new Button("LOGIN");
     private static Label wrongLogin;
 
     public static AnchorPane getScene() {
-        AnchorPane scene = new AnchorPane(makeBackground());
+        var scene = new AnchorPane(makeBackground());
 
-        Rectangle loginBox = makeLoginBox();
-        AnchorPane loginBoxContent = makeLoginBoxContent(loginBox);
+        var loginBox = makeLoginBox();
+        var loginBoxContent = makeLoginBoxContent(loginBox);
         setLoginButton(loginBoxContent);
-        Label loginHeader = makeLoginHeader();
+        var loginHeader = makeLoginHeader();
         wrongLogin = makeWrongLoginLabel();
         showErrorMessage(false);
-        VBox loginMessages = makeLoginMessages(loginHeader, wrongLogin);
-        VBox usernameField = makeUsernameField();
-        VBox passwordField = makePasswordField();
-        VBox fields = new VBox(usernameField, passwordField);
+        var loginMessages = makeLoginMessages(loginHeader, wrongLogin);
+        var usernameField = makeUsernameField();
+        var passwordField = makePasswordField();
+        var fields = new VBox(usernameField, passwordField);
         fields.setPadding(new Insets(0, 0, 0, 50));
         setFields(fields);
         loginBoxContent.getChildren().addAll(loginButton, loginMessages, fields);
@@ -52,28 +53,35 @@ public class LoginView implements ToggleVisible {
 
         return scene;
     }
-    
+
     private static Rectangle makeBackground() {
-        Stop[] stops = new Stop[] { new Stop(0, Color.web("5A060D")), new Stop(1, Color.web("#EF1A2D")) };
-        LinearGradient linearGradient = new LinearGradient(200, 200, ScreenBounds.getWidth() - 200,
-                ScreenBounds.getHeight() - 200, false, CycleMethod.REFLECT, stops);
-        Rectangle background = new Rectangle(ScreenBounds.getWidth(), ScreenBounds.getHeight());
+        var stops = new Stop[] { new Stop(0, Color.web("5A060D")), new Stop(1, Color.web("#EF1A2D")) };
+        var linearGradient = new LinearGradient(
+            200,
+            200,
+            ScreenBounds.getWidth() - 200,
+            ScreenBounds.getHeight() - 200,
+            false,
+            CycleMethod.REFLECT,
+            stops
+        );
+        var background = new Rectangle(ScreenBounds.getWidth(), ScreenBounds.getHeight());
         background.setFill(linearGradient);
         return background;
     }
-    
+
     private static Rectangle makeLoginBox() {
-        Rectangle loginBox = new Rectangle(500, ScreenBounds.getHeight() - 350, Color.web("#D9D9D9"));
+        var loginBox = new Rectangle(500, ScreenBounds.getHeight() - 350, Color.web("#D9D9D9"));
         Align.screenCenter(loginBox);
         loginBox.setLayoutY(150);
         RoundCorners.round(loginBox, loginBox.getHeight() * 0.05);
-        DropShadow dropShadow = new DropShadow(25, -1, 1, Color.web("#555555"));
+        var dropShadow = new DropShadow(25, -1, 1, Color.web("#555555"));
         loginBox.setEffect(dropShadow);
         return loginBox;
     }
 
     private static AnchorPane makeLoginBoxContent(Rectangle loginBox) {
-        AnchorPane loginBoxContent = new AnchorPane();
+        var loginBoxContent = new AnchorPane();
         loginBoxContent.setMinWidth(loginBox.getWidth());
         loginBoxContent.setMinHeight(loginBox.getHeight());
         loginBoxContent.setLayoutX(loginBox.getLayoutX());
@@ -88,48 +96,48 @@ public class LoginView implements ToggleVisible {
     }
 
     private static Label makeLoginHeader() {
-        Label loginHeader = new Label("LOGIN");
+        var loginHeader = new Label("LOGIN");
         loginHeader.getStyleClass().add("login-header");
         return loginHeader;
     }
 
     private static VBox makeLoginMessages(Label login, Label error) {
-        VBox loginMessages = new VBox(login, error);
+        var loginMessages = new VBox(login, error);
         loginMessages.setSpacing(25);
         loginMessages.setLayoutY(175);
         return loginMessages;
     }
 
-        private static VBox makeUsernameField() {
-        VBox username = new VBox(10);
+    private static VBox makeUsernameField() {
+        var username = new VBox(10);
         username.setPadding(new Insets(225, 0, 0, 0));
-        Label usernameLabel = new Label("Brugernavn");
-        HBox usernameField = new HBox();
-        SVGPath usernameIcon = new SVGPath();
+        var usernameLabel = new Label("Brugernavn");
+        var usernameField = new HBox();
+        var usernameIcon = new SVGPath();
         usernameIcon.setContent(SVGResources.getUsernameIcon());
         usernameTextField = new TextField();
         usernameTextField.setFocusTraversable(false);
         usernameTextField.setPromptText("Indtast brugernavn");
         usernameField.getChildren().addAll(usernameIcon, usernameTextField);
-        Line usernameLine = new Line();
+        var usernameLine = new Line();
         usernameLine.setEndX(400);
         username.getChildren().addAll(usernameLabel, usernameField, usernameLine);
         return username;
     }
 
     private static VBox makePasswordField() {
-        VBox password = new VBox(10);
-        Label passwordLabel = new Label("Password");
-        HBox passwordField = new HBox();
-        SVGPath passwordIcon = new SVGPath();
+        var password = new VBox(10);
+        var passwordLabel = new Label("Password");
+        var passwordField = new HBox();
+        var passwordIcon = new SVGPath();
         passwordIcon.setContent(SVGResources.getPasswordIcon());
         passwordPasswordField = new PasswordField();
         passwordPasswordField.setFocusTraversable(false);
         passwordPasswordField.setPromptText("Indtast password");
         passwordField.getChildren().addAll(passwordIcon, passwordPasswordField);
-        Line passwordLine = new Line();
+        var passwordLine = new Line();
         passwordLine.setEndX(400);
-        Label forgottenPassword = new Label("Glemt kodeord?");
+        var forgottenPassword = new Label("Glemt kodeord?");
         forgottenPassword.getStyleClass().add("login-forgotten-password");
         password.getChildren().addAll(passwordLabel, passwordField, passwordLine, forgottenPassword);
         return password;
@@ -139,20 +147,16 @@ public class LoginView implements ToggleVisible {
         fields.setSpacing(50);
         fields.setLayoutY(150);
     }
-    
+
     private static VBox makeLogos() {
-        VBox logos = new VBox(40);
-        logos.getChildren().addAll(
-                getFullLine(),
-                getNotFullLine(),
-                getFullLine(),
-                getNotFullLine());
+        var logos = new VBox(40);
+        logos.getChildren().addAll(getFullLine(), getNotFullLine(), getFullLine(), getNotFullLine());
         return logos;
     }
-    
+
     private static HBox getFullLine() {
-        HBox fullLine = new HBox(190);
-        for (int i = 0; i < 6; i++) {
+        var fullLine = new HBox(190);
+        for (var i = 0; i < 6; i += 1) {
             fullLine.getChildren().add(getLogo());
         }
 
@@ -160,9 +164,9 @@ public class LoginView implements ToggleVisible {
     }
 
     private static HBox getNotFullLine() {
-        HBox notFullLine = new HBox(190);
+        var notFullLine = new HBox(190);
         notFullLine.setPadding(new Insets(0, 190, 0, 190));
-        for (int i = 0; i < 5; i++) {
+        for (var i = 0; i < 5; i += 1) {
             notFullLine.getChildren().add(getLogo());
         }
 
@@ -170,17 +174,15 @@ public class LoginView implements ToggleVisible {
     }
 
     private static SVGPath getLogo() {
-        SVGPath logo = new SVGPath();
+        var logo = new SVGPath();
         logo.setContent(SVGResources.getLogoHorse());
         logo.getStyleClass().add("login-logo-horse");
-
         return logo;
     }
 
     private static Label makeWrongLoginLabel() {
-        Label wrongLogin = new Label("Login ikke fundet");
+        var wrongLogin = new Label("Login ikke fundet");
         wrongLogin.getStyleClass().add("login-error");
-
         return wrongLogin;
     }
 

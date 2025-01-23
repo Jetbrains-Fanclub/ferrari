@@ -6,6 +6,7 @@ import java.io.IOException;
 
 // Made by: Benjamin
 public class CSVWriter {
+
     private FileWriter file;
     private BufferedWriter writer;
     private int columnCount;
@@ -33,7 +34,7 @@ public class CSVWriter {
         columnCount = columns.length;
 
         try {
-            for (int i = 0; i < columns.length; ++i) {
+            for (var i = 0; i < columns.length; i += 1) {
                 writer.write(columns[i].toString());
                 if (i < columns.length - 1) {
                     writer.write(',');
@@ -53,7 +54,7 @@ public class CSVWriter {
         assert fields.length == columnCount : "Incorrect field count not matching column count";
 
         try {
-            for (int i = 0; i < fields.length; ++i) {
+            for (var i = 0; i < fields.length; i += 1) {
                 writer.write(sanitize(fields[i].toString()));
                 if (i < fields.length - 1) {
                     writer.write(',');

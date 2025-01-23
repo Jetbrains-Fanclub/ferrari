@@ -1,8 +1,5 @@
 package dk.eamv.ferrari.sharedcomponents.forms;
 
-import java.time.LocalDate;
-import java.time.Period;
-
 import dk.api.rki.Rating;
 import dk.eamv.ferrari.scenes.car.Car;
 import dk.eamv.ferrari.scenes.car.CarController;
@@ -12,10 +9,8 @@ import dk.eamv.ferrari.scenes.employee.Employee;
 import dk.eamv.ferrari.scenes.employee.EmployeeController;
 import dk.eamv.ferrari.scenes.loan.Loan;
 import dk.eamv.ferrari.scenes.loan.LoanController;
-import dk.eamv.ferrari.sharedcomponents.nodes.AutoCompleteComboBox;
-import javafx.scene.control.Button;
+import java.time.Period;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
 
 // Made by: Christian
 
@@ -24,6 +19,7 @@ import javafx.scene.control.TextField;
  */
 
 public class FormBinder {
+
     private static Form form;
     private static double banksInterestRate;
     private static Rating customersCreditScore;
@@ -62,10 +58,10 @@ public class FormBinder {
      * Binds it to action (On dropdown selected) to autofill the fields related to the car.
      */
     protected static void bindFieldsCar() {
-        TextField loanSize = FormInputHandler.getTextField("Lånets størrelse");
-        AutoCompleteComboBox<Car> comboBox = FormInputHandler.getAutoCompleteComboBox("Bil");
+        var loanSize = FormInputHandler.getTextField("Lånets størrelse");
+        var comboBox = FormInputHandler.<Car>getAutoCompleteComboBox("Bil");
         comboBox.setOnAction(e -> {
-            Car car = FormInputHandler.getEntityFromComboBox("Bil");
+            var car = FormInputHandler.<Car>getEntityFromComboBox("Bil");
             if (car != null) {
                 setFieldsLoanCar(car);
                 loanSize.setText(calculateLoanSize());
@@ -79,9 +75,9 @@ public class FormBinder {
      * Binds it to action (On dropdown selected) to autofill the fields related to the Customer.
      */
     protected static void bindFieldsCustomer() {
-        AutoCompleteComboBox<Customer> comboBox = FormInputHandler.getAutoCompleteComboBox("CPR & Kunde");
+        var comboBox = FormInputHandler.<Customer>getAutoCompleteComboBox("CPR & Kunde");
         comboBox.setOnAction(e -> {
-            Customer customer = FormInputHandler.getEntityFromComboBox("CPR & Kunde");
+            var customer = FormInputHandler.<Customer>getEntityFromComboBox("CPR & Kunde");
             if (customer != null) {
                 FormThreadHandler.checkRKI();
                 setFieldsLoanCustomer(customer);
@@ -94,7 +90,7 @@ public class FormBinder {
      * Binds it to action (On dropdown selected) to autofill the fields related to the Employee.
      */
     protected static void bindFieldsEmployee() {
-        AutoCompleteComboBox<Customer> comboBox = FormInputHandler.getAutoCompleteComboBox("Medarbejder");
+        var comboBox = FormInputHandler.<Customer>getAutoCompleteComboBox("Medarbejder");
         comboBox.setOnAction(e -> {
             Employee employee = FormInputHandler.getEntityFromComboBox("Medarbejder");
             if (employee != null) {
@@ -108,8 +104,8 @@ public class FormBinder {
      * Binds it to action (On dropdown selected) to autofill the fields related to the Loan.
      */
     protected static void bindLoanSize() {
-        TextField loanSize = FormInputHandler.getTextField("Lånets størrelse");
-        TextField downPayment = FormInputHandler.getTextField("Udbetaling");
+        var loanSize = FormInputHandler.getTextField("Lånets størrelse");
+        var downPayment = FormInputHandler.getTextField("Udbetaling");
 
         downPayment.setOnKeyTyped(e -> {
             loanSize.setText(calculateLoanSize());
@@ -136,7 +132,7 @@ public class FormBinder {
         FormInputHandler.getTextField("Pris").setText(String.valueOf(car.getPrice()));
         FormInputHandler.getTextField("Stelnummer").setText(String.valueOf(car.getId()));
     }
-    
+
     /**
      * Sets the fields related to Customer, in the loan form, when called.
      * @param customer - the Customer object whose properties will fill the fields.
@@ -171,13 +167,13 @@ public class FormBinder {
         FormInputHandler.getTextField("Lånets størrelse").setText(String.valueOf(loan.getLoanSize()));
         FormInputHandler.getTextField("Udbetaling").setText(String.valueOf(loan.getDownPayment()));
     }
-    
+
     /**
      * Sets the mouse listener for the "OK" button in the form, based on the passed argument.
      * @param type - the CRUD Type (Car, Customer, Employee, Loan)
      */
     protected static void setCreateMouseListener(CRUDType type) {
-        Button buttonOK = FormWrapper.getButtonOK();
+        var buttonOK = FormWrapper.getButtonOK();
 
         switch (type) {
             case CAR:
@@ -187,13 +183,12 @@ public class FormBinder {
                         return;
                     }
 
-                    Car car = FormInputHandler.getFieldsCar();
+                    var car = FormInputHandler.getFieldsCar();
                     CarController.getCars().add(car);
                     CarController.createCar(car);
                     FormWrapper.closeDialog(FormWrapper.getDialog());
                 });
                 break;
-
             case CUSTOMER:
                 buttonOK.setOnMouseClicked(e -> {
                     if (!form.verifyHasFilledFields()) {
@@ -207,7 +202,6 @@ public class FormBinder {
                     FormWrapper.closeDialog(FormWrapper.getDialog());
                 });
                 break;
-
             case EMPLOYEE:
                 buttonOK.setOnMouseClicked(e -> {
                     if (!form.verifyHasFilledFields()) {
@@ -215,13 +209,12 @@ public class FormBinder {
                         return;
                     }
 
-                    Employee employee = FormInputHandler.getFieldsEmployee();
+                    var employee = FormInputHandler.getFieldsEmployee();
                     EmployeeController.getEmployees().add(employee);
                     EmployeeController.createEmployee(employee);
                     FormWrapper.closeDialog(FormWrapper.getDialog());
                 });
                 break;
-            
             case LOAN:
                 buttonOK.setOnMouseClicked(e -> {
                     if (!form.verifyHasFilledFields()) {
@@ -240,24 +233,27 @@ public class FormBinder {
                     }
 
                     if (Double.valueOf(calculateLoanSize()) < 0) {
-                        FormStatusHandler.displayErrorMessage("Lånets størrelse kan ikke være mindre end det udbetalte beløb");
+                        FormStatusHandler.displayErrorMessage(
+                            "Lånets størrelse kan ikke være mindre end det udbetalte beløb"
+                        );
                         return;
                     }
 
-                    Employee employee = FormInputHandler.getEntityFromComboBox("Medarbejder");
+                    var employee = FormInputHandler.<Employee>getEntityFromComboBox("Medarbejder");
                     if (employee.getMaxLoan() < FormInputHandler.getDouble("Lånets størrelse")) {
-                        FormStatusHandler.displayErrorMessage("Lånets størrelse overskrider medarbejderens beføjelser.");
+                        FormStatusHandler.displayErrorMessage(
+                            "Lånets størrelse overskrider medarbejderens beføjelser."
+                        );
                         form.getForwardBoss().setVisible(true);
                         return;
                     }
 
-                    Loan loan = FormInputHandler.getFieldsLoan();
+                    var loan = FormInputHandler.getFieldsLoan();
                     LoanController.getLoans().add(loan);
                     LoanController.createLoan(loan);
                     FormWrapper.closeDialog(FormWrapper.getDialog());
                 });
                 break;
-
             default:
                 break;
         }
@@ -270,15 +266,15 @@ public class FormBinder {
      */
     private static String calculateLoanSize() {
         //Both start at 0, so we can return something (0 in this case) if theyre null & empty.
-        double price = 0;
-        double downpayment = 0;
+        var price = 0.0;
+        var downpayment = 0.0;
 
-        Car car = FormInputHandler.getEntityFromComboBox("Bil");
+        var car = FormInputHandler.<Car>getEntityFromComboBox("Bil");
         if (car != null) {
             price = car.getPrice();
         }
 
-        TextField textField = FormInputHandler.getTextField("Udbetaling");
+        var textField = FormInputHandler.getTextField("Udbetaling");
         if (!textField.getText().isEmpty()) {
             downpayment = FormInputHandler.getDouble("Udbetaling"); //call this instead of textField, to format ,s to .s (check javadoc).
         }
@@ -291,20 +287,19 @@ public class FormBinder {
      * @see FormInputHandler#getDouble(String)
      */
     protected static void calculateInterestRate() {
-        double totalInterestRate = 0.0;
-        double downpayment = 0;
-        double carPrice = 0;
+        var totalInterestRate = 0.0;
+        var downpayment = 0.0;
+        var carPrice = 0.0;
 
         totalInterestRate += banksInterestRate; //add banks rate
-
         totalInterestRate += getCreditScoreInterestRate(customersCreditScore); //add interest rate based on customers credit score
 
-        TextField downpaymentField = FormInputHandler.getTextField("Udbetaling");
+        var downpaymentField = FormInputHandler.getTextField("Udbetaling");
         if (!downpaymentField.getText().isEmpty()) {
             downpayment = FormInputHandler.getDouble("Udbetaling"); //calls this method to convert ","s to "."s (check javadoc).
         }
 
-        Car selectedCar = FormInputHandler.getEntityFromComboBox("Bil");
+        var selectedCar = FormInputHandler.<Car>getEntityFromComboBox("Bil");
         if (selectedCar != null) {
             carPrice = selectedCar.getPrice();
         }
@@ -315,8 +310,8 @@ public class FormBinder {
             }
         }
 
-        DatePicker start = FormInputHandler.getDatePicker("Start dato DD/MM/ÅÅÅÅ");
-        DatePicker end = FormInputHandler.getDatePicker("Slut dato DD/MM/ÅÅÅÅ");
+        var start = FormInputHandler.getDatePicker("Start dato DD/MM/ÅÅÅÅ");
+        var end = FormInputHandler.getDatePicker("Slut dato DD/MM/ÅÅÅÅ");
 
         if (start.getValue() != null && end.getValue() != null) {
             if (calculateDaysBetween(start, end) > 3 * 365) { //add 1% if loan period > 3 years.
@@ -324,7 +319,7 @@ public class FormBinder {
             }
         }
 
-        TextField interestField = FormInputHandler.getTextField("Rente");
+        var interestField = FormInputHandler.getTextField("Rente");
         interestField.setText(String.format("%.2f", totalInterestRate));
     }
 
@@ -343,15 +338,14 @@ public class FormBinder {
     protected static void setCustomersCreditScore(Rating rating) {
         customersCreditScore = rating;
     }
-    
+
     /**
      * Takes the customers rating and returns the added interest rate as an int.
      * @param creditRating - the customers credit score.
      * @return - the interest rate based on the customers credit score.
      */
     private static int getCreditScoreInterestRate(Rating creditRating) {
-        int interestRate = 0;
-
+        var interestRate = 0;
         if (creditRating == null) {
             return interestRate;
         }
@@ -367,20 +361,20 @@ public class FormBinder {
     }
 
     /**
-    * Takes the DatePickers and gets their value. Then calculates the days between the inputs.
+     * Takes the DatePickers and gets their value. Then calculates the days between the inputs.
      * @param start - the start date picker
      * @param end - the end date picker
      * @return the days between the 2 selected dates, as an int.
      */
     private static int calculateDaysBetween(DatePicker start, DatePicker end) {
-        LocalDate startDate = start.getValue();
-        LocalDate endDate = end.getValue();
-        Period period = Period.between(startDate, endDate);
-        int days = period.getDays();
-        int months = period.getMonths();
-        int years = period.getYears();
+        var startDate = start.getValue();
+        var endDate = end.getValue();
+        var period = Period.between(startDate, endDate);
+        var days = period.getDays();
+        var months = period.getMonths();
+        var years = period.getYears();
 
-        double totalDays = days + months * 30.5 + years * 365;
+        var totalDays = days + months * 30.5 + years * 365;
 
         return (int) totalDays;
     }

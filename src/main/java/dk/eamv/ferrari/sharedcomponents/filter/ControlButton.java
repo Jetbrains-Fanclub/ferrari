@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
  * It is not used in the current state of the program, as this task is handled by buttons within the tables themselves.
  */
 public class ControlButton extends Button {
+
     private final FilteredTableBuilderInfo<?> filteredTableBuilderInfo;
 
     /**
@@ -32,8 +33,11 @@ public class ControlButton extends Button {
         FilteredTable<?> filteredTable = filteredTableBuilderInfo.getFilteredTable();
 
         // Enable the button when a row is selected
-        filteredTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            setDisable(newValue == null);
-        });
+        filteredTable
+            .getSelectionModel()
+            .selectedItemProperty()
+            .addListener((observable, oldValue, newValue) -> {
+                setDisable(newValue == null);
+            });
     }
 }

@@ -1,9 +1,8 @@
 package dk.eamv.ferrari.scenes.sidebar;
 
+import dk.eamv.ferrari.sessionmanager.SessionManager;
 import java.util.EnumMap;
 import java.util.Map;
-
-import dk.eamv.ferrari.sessionmanager.SessionManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -22,6 +21,7 @@ import javafx.scene.shape.SVGPath;
  * It serves as a container for the sidebar elements.
  */
 public class SidebarView extends VBox {
+
     private static final SidebarView sidebarView = new SidebarView();
     private final ToggleGroup toggleGroup = new ToggleGroup();
     private final Map<SidebarButton, String> icons = new EnumMap<>(SidebarButton.class);
@@ -51,8 +51,8 @@ public class SidebarView extends VBox {
      */
     private void setButtonMap() {
         buttons.clear();
-        for (SidebarButton button : SidebarButton.values()) {
-            ToggleButton toggleButton = new ToggleButton(button.getLabel());
+        for (var button : SidebarButton.values()) {
+            var toggleButton = new ToggleButton(button.getLabel());
             buttons.put(button, toggleButton);
             icons.put(button, button.getIcon());
         }
@@ -78,14 +78,13 @@ public class SidebarView extends VBox {
      * @return HBox - the header of the SidebarView
      */
     private HBox getHeader() {
-        HBox header = new HBox();
+        var header = new HBox();
 
-        ImageView logo = new ImageView(new Image("file:src/main/resources/media/ferrari-logo.png"));
+        var logo = new ImageView(new Image("file:src/main/resources/media/ferrari-logo.png"));
         logo.setFitHeight(64);
         logo.setPreserveRatio(true);
 
-        Label text = new Label("Ferrari");
-
+        var text = new Label("Ferrari");
         header.setAlignment(Pos.CENTER);
         header.setPadding(new Insets(25, 0, 0, 0));
         header.setSpacing(10);
@@ -99,16 +98,14 @@ public class SidebarView extends VBox {
      * Sets their icon, alignment, style class, and toggle group.
      */
     private void configureButtons() {
+        for (var entry : icons.entrySet()) {
+            var button = buttons.get(entry.getKey());
 
-        for (Map.Entry<SidebarButton, String> entry : icons.entrySet()) {
-
-            ToggleButton button = buttons.get(entry.getKey());
-
-            SVGPath icon = new SVGPath();
+            var icon = new SVGPath();
             icon.setContent(entry.getValue()); // set content as the related svg resource
             icon.getStyleClass().add("sidebar-icon");
 
-            HBox iconContainer = new HBox(icon);
+            var iconContainer = new HBox(icon);
             iconContainer.setPadding(new Insets(0, 6, 0, 0)); // set padding between icon and text
 
             button.setGraphic(iconContainer);
@@ -124,17 +121,20 @@ public class SidebarView extends VBox {
      * @return VBox - a container with the SidebarView's buttons
      */
     private VBox getButtons() {
-        VBox buttonsContainer = new VBox();
+        var buttonsContainer = new VBox();
 
-        VBox buttonGroupOne = new VBox();
-        buttonGroupOne.getChildren().addAll(
+        var buttonGroupOne = new VBox();
+        buttonGroupOne
+            .getChildren()
+            .addAll(
                 buttons.get(SidebarButton.DASHBOARD),
                 buttons.get(SidebarButton.LOANS),
-                buttons.get(SidebarButton.REPORTS));
+                buttons.get(SidebarButton.REPORTS)
+            );
         buttonGroupOne.setAlignment(Pos.CENTER_RIGHT);
         buttonGroupOne.setSpacing(16);
 
-        VBox buttonGroupTwo = new VBox();
+        var buttonGroupTwo = new VBox();
         buttonGroupTwo.getChildren().add(buttons.get(SidebarButton.CARS));
         buttonGroupTwo.getChildren().add(buttons.get(SidebarButton.CUSTOMERS));
         if (SessionManager.getUser().isSalesManager()) {
@@ -143,20 +143,15 @@ public class SidebarView extends VBox {
         buttonGroupTwo.setAlignment(Pos.CENTER_RIGHT);
         buttonGroupTwo.setSpacing(16);
 
-        VBox buttonGroupThree = new VBox(
-            buttons.get(SidebarButton.SETTINGS),
-            buttons.get(SidebarButton.LOGOUT)
-        );
+        var buttonGroupThree = new VBox(buttons.get(SidebarButton.SETTINGS), buttons.get(SidebarButton.LOGOUT));
         buttonGroupThree.setAlignment(Pos.CENTER_RIGHT);
         buttonGroupThree.setSpacing(16);
 
         buttonsContainer.setSpacing(50); // buttons are grouped visually as they best relate
-
         buttonsContainer.getChildren().addAll(buttonGroupOne, buttonGroupTwo, buttonGroupThree);
 
         return buttonsContainer;
     }
-
 
     /**
      * Sets the active toggle button in the SidebarView.

@@ -1,12 +1,12 @@
 package dk.eamv.ferrari.sharedcomponents.forms;
 
-import java.util.HashMap;
 import dk.eamv.ferrari.scenes.car.CarController;
 import dk.eamv.ferrari.scenes.customer.CustomerController;
 import dk.eamv.ferrari.scenes.employee.EmployeeController;
 import dk.eamv.ferrari.sharedcomponents.email.EmailService;
 import dk.eamv.ferrari.sharedcomponents.nodes.AutoCompleteComboBox;
 import dk.eamv.ferrari.sharedcomponents.nodes.NumericTextField;
+import java.util.HashMap;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
  * A Form is a wrapperclass for a GridPane. It allows the user to enter input into various Control objects.
  */
 public class Form {
+
     private Button forwardBoss;
     private GridPane gridPane;
     private HashMap<String, Control> fieldMap;
@@ -41,18 +42,17 @@ public class Form {
     }
 
     private static GridPane createGridPane() {
-        GridPane gridPane = new GridPane();
+        var gridPane = new GridPane();
         gridPane.setVgap(25);
         gridPane.setHgap(50);
         gridPane.setAlignment(Pos.CENTER);
-
         return gridPane;
     }
 
     protected Button getForwardBoss() {
         return forwardBoss;
     }
-    
+
     protected GridPane getGridPane() {
         return gridPane;
     }
@@ -62,12 +62,11 @@ public class Form {
     }
 
     /**
-     * Sets a mouselistener that on click sends a confirmation email to the boss. 
+     * Sets a mouselistener that on click sends a confirmation email to the boss.
      * The button is displayed if the sellers loan limits are reached.
      */
     private void setForwardToBossListener() {
         forwardBoss.setOnMouseClicked(e -> EmailService.sendEmail());
-
         forwardBoss.setVisible(false);
     }
 
@@ -77,15 +76,16 @@ public class Form {
      * @return - true if all fields have input inside, else false.
      */
     protected boolean verifyHasFilledFields() {
-        String redStyle = """
-            -fx-prompt-text-fill: F50000;
-            -fx-background-color: #f7adb1;
-            -fx-border-color: F50000;
-        """;
+        var redStyle =
+            """
+                -fx-prompt-text-fill: F50000;
+                -fx-background-color: #f7adb1;
+                -fx-border-color: F50000;
+            """;
 
-        boolean allFieldsFilled = true;
-        for (Control widget : fieldMap.values()) {
-            boolean filledField = true;
+        var allFieldsFilled = true;
+        for (var widget : fieldMap.values()) {
+            var filledField = true;
             if (widget instanceof TextField) {
                 filledField = !((TextField) widget).getText().isEmpty();
             } else if (widget instanceof ComboBox) {
@@ -103,7 +103,7 @@ public class Form {
         }
         return allFieldsFilled;
     }
-    
+
     private void setColumn(int value) {
         column = value;
     }
@@ -121,10 +121,11 @@ public class Form {
     }
 
     /**
-     * Utilizes the builder pattern, allowing creation of custom forms. 
+     * Utilizes the builder pattern, allowing creation of custom forms.
      * It is a nested/subclass of Form. It is static, so that it cant be instantiated on its own.
      */
     protected static class Builder {
+
         private Form form;
 
         protected Builder() {
@@ -138,11 +139,11 @@ public class Form {
          * @return - itself allowing method chaining.
          */
         private Builder addFieldToForm(String labelText, Control control) {
-            int row = form.getRow();
-            int column = form.getColumn();
+            var row = form.getRow();
+            var column = form.getColumn();
 
-            VBox vBox = new VBox();
-            Label heading = new Label(labelText);
+            var vBox = new VBox();
+            var heading = new Label(labelText);
             vBox.getChildren().addAll(heading, control);
             if (column > 2) { //enforce maximum 3 fields in each row.
                 column = 0;
@@ -164,8 +165,8 @@ public class Form {
          * @return - itself allowing for method chaining.
          */
         private Builder withFieldsString(String... input) {
-            for (String i : input) {
-                TextField textField = new TextField();
+            for (var i : input) {
+                var textField = new TextField();
                 textField.setPromptText(i);
                 addFieldToForm(i, textField);
             }
@@ -182,22 +183,21 @@ public class Form {
          * @see dk.eamv.ferrari.sharedcomponents.nodes.NumericTextField
          */
         private Builder withFieldNumbers(int maxLength, boolean decimals, String input) {
-            NumericTextField numberField = new NumericTextField(decimals, maxLength);
+            var numberField = new NumericTextField(decimals, maxLength);
             numberField.setPromptText(input);
             addFieldToForm(input, numberField);
-
             return this;
         }
 
         /**
-         * Inserts a plain TextField into the GridPane & HashMap, which is then disabled, allowing no inputs. 
+         * Inserts a plain TextField into the GridPane & HashMap, which is then disabled, allowing no inputs.
          * Intended to be combined with binding of other Control.
          * @param input - The Header(s) of the TextField(s). Made with varargs, allowing for 0..M Strings.
          * @return - itself allowing for method chaining.
          */
         private Builder withFieldsUneditable(String... input) {
-            for (String i : input) {
-                TextField textField = new TextField();
+            for (var i : input) {
+                var textField = new TextField();
                 textField.setDisable(true);
                 addFieldToForm(i, textField);
             }
@@ -207,7 +207,7 @@ public class Form {
 
         /**
          * Inserts a "searchable dropdown menu" in the GridPane & HashMap.
-         * The method is generically typed with <E>, allowing a list of entities to be added to the ComboBox, 
+         * The method is generically typed with <E>, allowing a list of entities to be added to the ComboBox,
          * which then will then display their properties using E.toString().
          * @param <E> - generic typed Entity, intended to be used for Car, Customer, Employee.
          * @param content - the observable list of the Entity.
@@ -216,9 +216,8 @@ public class Form {
          * @see dk.eamv.ferrari.sharedcomponents.nodes.AutoCompleteComboBox
          */
         private <E> Builder withDropDownBox(ObservableList<E> content, String input) {
-            AutoCompleteComboBox<E> dropDown = new AutoCompleteComboBox<>(content);
+            var dropDown = new AutoCompleteComboBox<E>(content);
             addFieldToForm(input, dropDown);
-
             return this;
         }
 
@@ -227,8 +226,8 @@ public class Form {
          * @return itself allowing for method chaining.
          */
         private Builder withFieldsDatePicker() {
-            DatePicker startDatePicker = new DatePicker();
-            DatePicker endDatePicker = new DatePicker();
+            var startDatePicker = new DatePicker();
+            var endDatePicker = new DatePicker();
 
             addFieldToForm("Start dato DD/MM/ÅÅÅÅ", startDatePicker);
             addFieldToForm("Slut dato DD/MM/ÅÅÅÅ", endDatePicker);
@@ -250,11 +249,11 @@ public class Form {
          */
         protected Form buildCustomerForm() {
             form = new Form.Builder()
-                    .withFieldsString("Fornavn", "Efternavn")
-                    .withFieldNumbers(8, false, "Telefonnummer")
-                    .withFieldsString("Email", "Adresse")
-                    .withFieldNumbers(10, false, "CPR")
-                    .build();
+                .withFieldsString("Fornavn", "Efternavn")
+                .withFieldNumbers(8, false, "Telefonnummer")
+                .withFieldsString("Email", "Adresse")
+                .withFieldNumbers(10, false, "CPR")
+                .build();
             return form;
         }
 
@@ -264,10 +263,10 @@ public class Form {
          */
         protected Form buildCarForm() {
             form = new Form.Builder()
-                    .withFieldNumbers(4, false, "Årgang")
-                    .withFieldNumbers(-1, true, "Pris") //-1 = no maxlength constraint
-                    .withFieldsString("Model")
-                    .build();
+                .withFieldNumbers(4, false, "Årgang")
+                .withFieldNumbers(-1, true, "Pris") //-1 = no maxlength constraint
+                .withFieldsString("Model")
+                .build();
             return form;
         }
 
@@ -277,14 +276,14 @@ public class Form {
          */
         protected Form buildEmployeeForm() {
             form = new Form.Builder()
-                    .withFieldsString("Fornavn", "Efternavn")
-                    .withFieldNumbers(8, false, "Telefon nr.")
-                    .withFieldsString("Email", "Kodeord")
-                    .withFieldNumbers(-1, false, "Udlånsgrænse")
-                    .build();
+                .withFieldsString("Fornavn", "Efternavn")
+                .withFieldNumbers(8, false, "Telefon nr.")
+                .withFieldsString("Email", "Kodeord")
+                .withFieldNumbers(-1, false, "Udlånsgrænse")
+                .build();
             return form;
         }
-        
+
         /**
          * Builds the loan form.
          * @return - the loan form.

@@ -1,12 +1,11 @@
 package dk.eamv.ferrari.scenes.loan;
 
-import java.util.Optional;
-
 import dk.eamv.ferrari.csv.CSVWriter;
 import dk.eamv.ferrari.resources.SVGResources;
 import dk.eamv.ferrari.sessionmanager.SessionManager;
 import dk.eamv.ferrari.sharedcomponents.filter.FilteredTableBuilder;
 import dk.eamv.ferrari.sharedcomponents.forms.FormFactory;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -16,6 +15,7 @@ import javafx.scene.control.ChoiceBox;
 // Made by: Mikkel
 // Modified by: Benjamin (extended CRUD for sales manager)
 public class LoanController {
+
     protected static FilteredTableBuilder<Loan> filteredTableBuilder;
     private static final ObservableList<Loan> loans = FXCollections.observableArrayList(LoanModel.readAll());
 
@@ -34,7 +34,7 @@ public class LoanController {
             .withProgressColumn("", Loan::getStartDate, Loan::getEndDate)
             .withStatusColumn("Status", Loan::getStatus)
             .withButtonColumn(SVGResources.getChangeStatusIcon(), LoanController::updateLoanStatus);
-        
+
         if (SessionManager.getUser().isSalesManager()) {
             filteredTableBuilder
                 .withButtonColumn(SVGResources.getEditIcon(), LoanView::showEditLoanDialog)
@@ -67,8 +67,8 @@ public class LoanController {
 
     protected static void updateLoanStatus(Loan loan) {
         // Create a ChoiceBox to enable the user to set the status of this loan
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        for (LoanState state : LoanState.values()) {
+        var choiceBox = new ChoiceBox<String>();
+        for (var state : LoanState.values()) {
             choiceBox.getItems().add(new LoanStatus(state).getDisplayName());
         }
 
@@ -76,17 +76,18 @@ public class LoanController {
         choiceBox.setValue(loan.getStatus().getDisplayName());
 
         // Use a dialog for the ChoiceBox
-        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        var dialog = new Alert(Alert.AlertType.CONFIRMATION);
         dialog.setTitle("Opdater status");
         dialog.setHeaderText("Vælg ny status for dette lån");
         dialog.getDialogPane().setContent(choiceBox);
-        Optional<ButtonType> result = dialog.showAndWait();
+
+        var result = dialog.showAndWait();
         if (!result.isPresent()) {
             return;
         }
 
         if (result.get() == ButtonType.OK) {
-            for (LoanState state : LoanState.values()) {
+            for (var state : LoanState.values()) {
                 if (new LoanStatus(state).getDisplayName().equals(choiceBox.getValue())) {
                     loan.setStatus(new LoanStatus(state));
                     LoanModel.update(loan);
@@ -99,17 +100,31 @@ public class LoanController {
 
     private static void exportLoan(Loan loan) {
         new Thread(() -> {
-            CSVWriter writer = new CSVWriter(String.format("%d_%s_%s.csv", loan.getCustomer_id(), loan.getStartDate(), loan.getEndDate()));
+            var writer = new CSVWriter(
+                String.format("%d_%s_%s.csv", loan.getCustomer_id(), loan.getStartDate(), loan.getEndDate())
+            );
             writer.writeHeader(
-                "car id", "customer id", "employee id",
-                "loan size", "downpayment", "interest rate",
-                "start date", "end date", "status"
+                "car id",
+                "customer id",
+                "employee id",
+                "loan size",
+                "downpayment",
+                "interest rate",
+                "start date",
+                "end date",
+                "status"
             );
 
             writer.writeRow(
-                loan.getCar_id(), loan.getCustomer_id(), loan.getEmployee_id(),
-                loan.getLoanSize(), loan.getDownPayment(), loan.getInterestRate(),
-                loan.getStartDate(), loan.getEndDate(), loan.getStatus().getDisplayName()
+                loan.getCar_id(),
+                loan.getCustomer_id(),
+                loan.getEmployee_id(),
+                loan.getLoanSize(),
+                loan.getDownPayment(),
+                loan.getInterestRate(),
+                loan.getStartDate(),
+                loan.getEndDate(),
+                loan.getStatus().getDisplayName()
             );
             writer.close();
         }).start();

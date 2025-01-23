@@ -15,29 +15,28 @@ import javafx.scene.text.FontWeight;
 public class FrontpageView {
 
     public static BorderPane getScene() {
-        BorderPane scene = new BorderPane();
+        var scene = new BorderPane();
         scene.setLeft(SidebarView.getSidebarView());
-        SidebarView.getSidebarView()
-            .setActiveToggleButton(SidebarButton.DASHBOARD);
         scene.setCenter(getFrontPageView());
+        SidebarView.getSidebarView().setActiveToggleButton(SidebarButton.DASHBOARD);
         return scene;
     }
 
     private static BorderPane getFrontPageView() {
-        BorderPane bPane = new BorderPane();
-        ImageView imageView = new ImageView(
-            new Image("file:src/main/resources/media/ferrari-logo.png")
-        );
+        var bPane = new BorderPane();
+        var imageView = new ImageView(new Image("file:src/main/resources/media/ferrari-logo.png"));
+
         imageView.setFitHeight(500);
         imageView.setFitWidth(300);
         bPane.setCenter(imageView);
 
-        Label welcome = new Label("Velkommen til Ferrari Herning");
+        var wvbox = new VBox();
+        var welcome = new Label("Velkommen til Ferrari Herning");
         welcome.setFont(Font.font("Arial", FontWeight.BOLD, 34));
-        VBox wvbox = new VBox();
+
         wvbox.getChildren().add(welcome);
-        bPane.setTop(wvbox);
         wvbox.setAlignment(Pos.CENTER);
+        bPane.setTop(wvbox);
 
         return bPane;
     }

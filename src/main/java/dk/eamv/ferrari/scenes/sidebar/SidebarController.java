@@ -6,8 +6,8 @@ import dk.eamv.ferrari.scenes.customer.CustomerView;
 import dk.eamv.ferrari.scenes.employee.EmployeeView;
 import dk.eamv.ferrari.scenes.frontpage.FrontpageView;
 import dk.eamv.ferrari.scenes.loan.LoanView;
-import dk.eamv.ferrari.scenes.settings.SettingsView;
 import dk.eamv.ferrari.scenes.login.LoginView;
+import dk.eamv.ferrari.scenes.settings.SettingsView;
 import javafx.event.ActionEvent;
 
 // Made by: Mikkel
@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
  *  Handles buttons in the Sidebar in order to switch scene
  */
 public class SidebarController {
+
     protected static void onDashboardButtonClick(ActionEvent event) {
         SceneManager.changeScene(FrontpageView.getScene());
     }
@@ -43,9 +44,8 @@ public class SidebarController {
     protected static void onSettingsButtonClick(ActionEvent event) {
         SceneManager.changeScene(SettingsView.getScene());
     }
-  
+
     protected static void onLogOutButtonClick(ActionEvent event) {
         SceneManager.changeScene(LoginView.getScene());
     }
-
 }

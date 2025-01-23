@@ -1,12 +1,11 @@
 package dk.eamv.ferrari.sharedcomponents.filter;
 
+import java.util.Objects;
+import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.TableView;
-
-import java.util.Objects;
-import java.util.function.Predicate;
 
 // Made by: Mikkel
 
@@ -14,6 +13,7 @@ import java.util.function.Predicate;
  * Class to add functionality to the standard JavaFX TableView class
  */
 public class FilteredTable<T> extends TableView<T> {
+
     // TableView takes generic type T in order to be able to use different types (Car, Customer etc)
 
     private final FilteredList<T> filteredData;
@@ -25,7 +25,7 @@ public class FilteredTable<T> extends TableView<T> {
     public FilteredTable(ObservableList<T> data) {
         // Data will initially be shown like this (everything)
         filteredData = new FilteredList<>(data, predicate -> true);
-        SortedList<T> sortedData = new SortedList<>(filteredData);
+        var sortedData = new SortedList<T>(filteredData);
 
         // Binds data from list to the TableView - If user sorts in the tableview, list order is updated
         sortedData.comparatorProperty().bind(comparatorProperty());

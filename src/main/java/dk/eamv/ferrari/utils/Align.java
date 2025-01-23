@@ -7,6 +7,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class Align {
+
     //2 nodes X axis.
     public static void left(Node parent, Node child) {
         child.setLayoutX(0);
@@ -82,7 +83,7 @@ public class Align {
     public static void screenBottom(Node child) {
         child.setLayoutY(ScreenBounds.getHeight() - getHeight(child));
     }
-    
+
     //Service methods to get X & Y of different types of nodes.
     private static double getWidth(Node node) {
         if (node instanceof Circle) {
@@ -104,7 +105,7 @@ public class Align {
         if (node instanceof Circle) {
             return ((Circle) node).getRadius();
         } else if (node instanceof Line) {
-            Line line = ((Line) node);
+            var line = ((Line) node);
             return line.getEndY() - line.getStartY();
         } else if (node instanceof Rectangle) {
             return ((Rectangle) node).getHeight();
